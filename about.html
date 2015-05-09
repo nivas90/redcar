@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <link href="styles/style.css" rel="stylesheet">
+  </head>
+
+  <body>
+    <div class="container">
+        <ul id="gn-menu" class="gn-menu-main">
+          <li class="gn-trigger">
+            <a class="gn-icon gn-icon-menu"><span>Menu</span></a>
+            <nav class="gn-menu-wrapper">
+              <div class="gn-scroller">
+                <ul class="gn-menu">
+                  <li class="gn-search-item">
+                    <input placeholder="Search" type="search" class="gn-search">
+                    <a class="gn-icon gn-icon-search"><span>Search</span></a>
+                  </li>
+                  <li><a href="about.html" class="gn-icon gn-icon-download">About</a></li>
+                </ul>
+              </div><!-- /gn-scroller -->
+            </nav>
+          </li>
+          <li><a href="index.html">Redcar</a></li>
+        </ul>
+    </div>
+
+    <div class="heading-about marginbot-50">
+      <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-lg-offset-2">
+          <div class="section-heading">
+            <h2>About</h2>
+            <p>Redcar is an intelligent cab aggregator. Being a frequent cab user, I find myself amidst the hassle of choosing the most cost economical segment with the available cab providers at my current location. Its a tricky problem to solve because different operators have a different initial flat rate, different cost per KM and different surge multipliers at that time. Add to it that not all cab providers may be available at your current location when you want.</p>
+            <p>Redcar is a mobile app that aims to solve these problems and provide a unified hassle free experience so that users can choose the most cost economical way to travel. We also plan to augment this model by collecting various important metrics at different places in the city.</p>
+            <p>For example, by looking at the "Cab redundancy" metric near my home, I can be sure that there are usually 3 cabs around my home and hence I can trust that a cab will be mostly available when I need it urgently in short notice.</p>
+            <p>As another example, we can provide intelligent suggestions to the cab drivers. If we detect that there are too many cabs in one particular location, we can send a notification (using Twilio) to some of them to move to location where cabs are sparse. That way every driver gets a better chance of picking a ride.</p>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>    
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script src="scripts/jquery.easing.min.js"></script> 
+    <script src="scripts/gnmenu.js"></script>
+    <script src="scripts/jquery.scrollTo.js"></script>
+    <script src="scripts/classie.js"></script>
+
+    <script>
+      new gnMenu( document.getElementById( 'gn-menu' ) );
+    </script>
+  </body>
+
+</html>
