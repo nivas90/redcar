@@ -37,8 +37,8 @@ function handleNoGeolocation(errorFlag) {
         icon: {
           path: google.maps.SymbolPath.CIRCLE,
           strokeColor: 'DodgerBlue',
-          strokeWeight: 5,
-          scale: 8
+          strokeWeight: 4,
+          scale: 6
         }
       });
 
@@ -47,7 +47,7 @@ function handleNoGeolocation(errorFlag) {
         draggable: true,
         showContent: true,
         content: "Pickup location",
-        icon: 'icons/pin-64px.png'
+        icon: 'icons/pin-24px.png'
       });
       pickupLocationMarker.setZIndex(1000);
     }, function() {
