@@ -13,7 +13,7 @@
     mapTypeControl: false,
     panControl: false,
     streetViewControl: false,
-    zoomControl: false,
+    zoomControl: true,
     /*zoomControlOptions: {
       position: google.maps.ControlPosition.LEFT_BOTTOM,
       style: google.maps.ZoomControlStyle.DEFAULT

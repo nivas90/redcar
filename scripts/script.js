@@ -17,6 +17,15 @@ function handleNoGeolocation(errorFlag) {
   map.setCenter(options.position);
 }
 
+(function initialize() {
+  autocomplete = new google.maps.places.Autocomplete(
+      (document.getElementById('search')),
+      { types: ['geocode'] });
+  google.maps.event.addListener(autocomplete, 'place_changed', function() {
+    console.log("Place changed in Search box!");
+  });
+}());
+
 (function(window, mapster) {
 
   var options = mapster.MAP_OPTIONS,
@@ -26,14 +35,20 @@ function handleNoGeolocation(errorFlag) {
   // Try HTML5 geolocation
   if(navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
-      var pos = new google.maps.LatLng(position.coords.latitude,
+      var geolocation = new google.maps.LatLng(position.coords.latitude,
                                        position.coords.longitude);
 
-      map.setCenter(pos);
+      map.setCenter(geolocation);
+
+      var circle = new google.maps.Circle({
+        center: geolocation,
+        radius: position.coords.accuracy
+      });
+      autocomplete.setBounds(circle.getBounds());
 
       // User location
       map.addMarker({
-        pos: pos,
+        pos: geolocation,
         icon: {
           path: google.maps.SymbolPath.CIRCLE,
           strokeColor: 'DodgerBlue',
@@ -43,11 +58,18 @@ function handleNoGeolocation(errorFlag) {
       });
 
       var pickupLocationMarker = map.addMarker({
-        pos: pos,
+        pos: geolocation,
         draggable: true,
         showContent: true,
-        content: "Pickup location",
-        icon: 'icons/pin-64px.png'
+        content: '<h5>Pickup location</h5>',
+        icon: 'icons/pin-64px.png',
+        event: {
+          name: 'dragend',
+          callback: function() {
+            var pos = pickupLocationMarker.getPosition();
+            console.log("Marker dragged! to " + pos);
+          }
+        }
       });
       pickupLocationMarker.setZIndex(1000);
     }, function() {
