@@ -1,0 +1,85 @@
+<html>
+<style>
+body{
+  background: #4E535B;
+  font-family: 'Montserrat', Arial;
+  font-size: 1 em;
+  color: #FFFFFF;
+}
+</style>
+
+<div id="placeholder"></div>
+<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+<script>
+
+var findMinCost = function (NoOfPersons, distance, averageSpeed) {
+    var result = {"service":"", "minimumCost":99999};
+    if (NoOfPersons < 1) {
+        return result;
+    }
+    var i;
+    if(NoOfPersons>=3){
+	i=3;
+    }else{
+	i=NoOfPersons;
+	}
+    for(;i<=6 && i<=NoOfPersons;i++){
+    var temp = findMin(i,distance, averageSpeed);
+    var subProblem = arguments.callee(NoOfPersons*1-i, distance, averageSpeed);
+    var tempCost;
+    if(subProblem.minimumCost == 99999){
+    tempCost=0;
+    }else{
+    tempCost=subProblem.minimumCost;
+    }
+    temp = {"service":temp.service+"&"+subProblem.service, "minimumCost":temp.minimumCost+tempCost};
+    if(temp.minimumCost <= result.minimumCost){
+	result = temp;
+	}
+    }
+    return result;
+}
+
+function findMin(NoOfPersons, distance, averageSpeed) {
+var rawText = '{"redcab":[{"Uber":[{"UberX":{"size":"4","basefare":"60","costperkm":"15","costpermin":"1"}},{"UberBlack":{"size":"6","basefare":"100","costperkm":"18","costpermin":"2"}}]},{"Ola":[{"OlaMini":{"size":"3","basefare":"100","costperkm":"12"}},{"OlaEconomy":{"size":"4","basefare":"120","costperkm":"16"}},{"OlaPrime":{"size":"6","basefare":"150","costperkm":"18"}}]},{"Taxi4Sure":[{"Taxi4sureHatchBack":{"size":"3","basefare":"49","costperkm":"15"}},{"Taxi4sureSedan":{"size":"4","basefare":"49","costperkm":"16"}},{"Taxi4sureSUV":{"size":"6","basefare":"150","costperkm":"18"}}]}]}';
+var data = JSON.parse(rawText);
+var timeTaken = distance/averageSpeed*60;
+var minCost = 999999;
+var service;
+var result;
+	for ( var x in data) {
+		for ( var y in data[x]) {
+			for ( var z in data[x][y]) {
+				for ( var a in data[x][y][z]) {
+					for ( var b in data[x][y][z][a]) {
+						var temp = data[x][y][z][a][b];
+						if(temp.size < NoOfPersons){
+						continue;
+						}
+						var costPerMin = temp.costpermin;
+						if(costPerMin){
+							costPerMin = costPerMin*timeTaken;					
+						}else{
+						costPerMin=0;
+						}
+						var cost = temp.basefare*1 + temp.costperkm*distance + costPerMin*1;
+						if(cost < minCost){
+						minCost = cost;
+						service = data[x][y][z][a];								
+						}
+						console.log(cost);
+					}
+				}
+			}
+		}
+	}
+for (var key in service) {
+	result = {"service":key, "minimumCost":minCost};
+}
+
+return result;
+}
+</script>
+</html>
+
+            
