@@ -17,6 +17,18 @@ var vehicleIconEnum = {
   'MeruBlack': 'icons/meru-large-32px.png'
 }
 
+var cabArray = [
+  'UberX', 'UberTaxi', 'UberBlack', 'OlaX', 'OlaTaxi', 'OlaBlack', 'T4SX', 'T4STaxi', 'T4SBlack', 'MeruX', 'MeruTaxi', 'MeruBlack'
+];
+
+function randomIndex(max) {
+  return Math.floor((Math.random() * max) + 1);
+}
+
+function randomFloat() {
+  return ((Math.random()-0.5)/100)*1.5;
+}
+
 function handleNoGeolocation(errorFlag) {
   if (errorFlag) {
     var content = 'Error: The Geolocation service failed.';
@@ -107,7 +119,11 @@ function plotCar(map, lat, lng, carType) {
       });
       pickupLocationMarker.setZIndex(1000);
 
-      plotCar(map, position.coords.latitude+0.001, position.coords.longitude-0.003, 'UberX');
+      // plotCar(map, position.coords.latitude+0.001, position.coords.longitude+0.003, 'UberX');
+      for (var i = 0; i <= 10; i++) {
+        plotCar(map, position.coords.latitude+randomFloat(), 
+            position.coords.longitude+randomFloat(), cabArray[randomIndex(10)]);
+      }
     }, function() {
       handleNoGeolocation(true);
     });
