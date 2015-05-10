@@ -49,6 +49,10 @@ var findMinCost = function (NoOfPersons, distance, averageSpeed) {
     return result;
 }
 map = {};
+function findMinDynamic(NoOfPersons, distance, averageSpeed){
+map = {};
+return findMinCostDynamic(NoOfPersons, distance, averageSpeed);
+}
 var findMinCostDynamic = function (NoOfPersons, distance, averageSpeed) {
     var result = {"service":"", "minimumCost":99999};
     if (NoOfPersons < 1) {
