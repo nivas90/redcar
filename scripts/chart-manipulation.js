@@ -66,20 +66,6 @@ for(i=0; i<noOfCabs; i++){
     lineEndPoints[i][3]=costArray[i][distance-1];
 }
 
-var ptOfIntersectionStr = '{"points":[]}';
-
-var ptOfIntersection = JSON.parse(ptOfIntersectionStr);
-
-var ptOfIntersection;
-for(i=0;i<noOfCabs;i++){
-for(j=i+1;j<noOfCabs;j++){
-    var tempPt = checkLineIntersection(lineEndPoints[i][0],lineEndPoints[i][1],lineEndPoints[i][2],lineEndPoints[i][3],lineEndPoints[j][0],lineEndPoints[j][1],lineEndPoints[j][2],lineEndPoints[j][3]);
-   // if(tempPt.x > 0)
-    //ptOfIntersection['points'].push()
-}
-}
-console.log(ptOfIntersection);
-
 for (var key in service) {
   result = {"service":key, "minimumCost":minCost};
 }
