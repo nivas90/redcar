@@ -48,6 +48,40 @@ var findMinCost = function (NoOfPersons, distance, averageSpeed) {
     }
     return result;
 }
+map = {};
+var findMinCostDynamic = function (NoOfPersons, distance, averageSpeed) {
+    var result = {"service":"", "minimumCost":99999};
+    if (NoOfPersons < 1) {
+        return result;
+    }
+    if(map[NoOfPersons]){
+    	return map[NoOfPersons];
+    }
+    var i;
+    if(NoOfPersons>=3){
+	i=3;
+    }else{
+	i=NoOfPersons;
+	}
+    for(;i<=6 && i<=NoOfPersons;i++){
+    var temp = findMin(i,distance, averageSpeed);
+    var subProblem = arguments.callee(NoOfPersons*1-i, distance, averageSpeed);
+    var tempCost;
+    if(subProblem.minimumCost == 99999){
+    tempCost=0;
+    }else{
+    tempCost=subProblem.minimumCost;
+    }
+    temp = {"service":temp.service+", "+subProblem.service, "minimumCost":temp.minimumCost+tempCost};
+    if(temp.minimumCost <= result.minimumCost){
+	result = temp;
+	}
+    }
+    map[NoOfPersons] = result;
+    return result;
+}
+
+
 //findMinCost(10,5,20);
 //findMinCost(4,5,20);
 //findMinCost(9,20,200);
