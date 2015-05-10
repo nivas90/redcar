@@ -1,6 +1,9 @@
 var sourceLatLng;
 var destLatLng;
 var distance;
+var duration;
+var sourceAddr;
+var destinationAddr;
 var globalMap;
 var pickupLocationMarker;
 
@@ -37,7 +40,13 @@ function singleCabTable(cabArray) {
   $('#map-canvas').hide();
   $('#footer').hide();
   console.log("Loading table for single cab!");
-  var tableElem = $('<table class="table" id="cabs-result-table"><thead><tr><th>Service</th><th>Cost</th></tr></thead><tbody></tbody></table>');
+  var caption;
+  if(sourceAddr) {
+    caption= '<caption><big><b>Distance: '+distance+'</b></big><br><big><b>ETA: '+duration+'</b></big><br><i>'+sourceAddr+'</i> to <i>'+destinationAddr+'</i></caption>';
+  } else {
+    caption= '<caption><big><b>Distance: '+distance+'</b></big><br><big><b>ETA: '+duration+'</b></big><br><i>To <i>'+destinationAddr+'</i></caption>';
+  }
+  var tableElem = $('<table class="table" id="cabs-result-table">'+caption+'<thead><tr><th>Service</th><th>Cost</th></tr></thead><tbody></tbody></table>');
   $('#cab-result').html(tableElem);
   for (var i = 0; i < cabArray.length; i++) {
     var cost;
@@ -56,7 +65,13 @@ function multipleCabTable(cabArray) {
   $('#map-canvas').hide();
   $('#footer').hide();
   console.log("Loading table for multiple cabs!");
-  var tableElem = $('<table class="table" id="cabs-result-table"><thead><tr><th>No. of Riders</th><th>Service</th><th>Cost</th></tr></thead><tbody></tbody></table>');
+  var caption;
+  if(sourceAddr) {
+    caption= '<caption><big><b>Distance: '+distance+'</b></big><br><big><b>ETA: '+duration+'</b></big><br><i>'+sourceAddr+'</i> to <i>'+destinationAddr+'</i></caption>';
+  } else {
+    caption= '<caption><big><b>Distance: '+distance+'</b></big><br><big><b>ETA: '+duration+'</b></big><br><i>To <i>'+destinationAddr+'</i></caption>';
+  }
+  var tableElem = $('<table class="table" id="cabs-result-table">'+caption+'<thead><tr><th>No. of Riders</th><th>Service</th><th>Cost</th></tr></thead><tbody></tbody></table>');
   $('#cab-result').html(tableElem);
   for (var i = 0; i < cabArray.length; i++) {
     var cost;
@@ -130,6 +145,7 @@ function geoCodingcallback(response, status) {
     for (var i = 0; i < origins.length; i++) {
       var results = response.rows[i].elements;
       distance = results[0].distance.text;
+      duration = results[0].duration.text;
     }
   }
 }
@@ -175,6 +191,7 @@ function sourceAddress(geocoder, address) {
     console.log("Place changed in Search box!");
     var address = $('#search').val();
     console.log("Place changed in Source box! " + address);
+    sourceAddr = address;
     sourceAddress(geocoder, address);
     $('#exp-select-group').show();
   });
@@ -185,6 +202,7 @@ function sourceAddress(geocoder, address) {
   google.maps.event.addListener(destinationAutocomplete, 'place_changed', function() {
     var address = $('#destination-selection').val();
     console.log("Place changed in Destination box! " + address);
+    destinationAddr = address;
     codeAddress(geocoder, address);
     $('#exp-select-group').show();
   });

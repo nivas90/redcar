@@ -36,6 +36,9 @@ body {
 #exp-select-group {
     display: none;
 }
+#cabs-result-table caption {
+    padding-left: 8px;
+}
 
 /* ============================
 --- Menu
