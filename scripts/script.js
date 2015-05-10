@@ -31,23 +31,56 @@ function randomFloat() {
   return ((Math.random()-0.5)/100)*1.5;
 }
 
-$(document).ready($('#suggestion').click(function(){
-  console.log("Distance: "+distance);
-  var cabArray = findCabSorted(5, distance, 60);
+function singleCabTable(cabArray) {
   $('#map-canvas').hide();
   $('#footer').hide();
-  console.log("Loading cabs");
-  var tableElem = $('<table class="table table-condensed table-striped" id="cabs-result-table"><thead><tr><th>Service</th><th>Cost</th></tr></thead><tbody></tbody></table>');
+  console.log("Loading table for single cab!");
+  var tableElem = $('<table class="table" id="cabs-result-table"><thead><tr><th>Service</th><th>Cost</th></tr></thead><tbody></tbody></table>');
   $('#cab-result').html(tableElem);
-  for (var i = cabArray.length - 1; i >= 0; i--) {
+  for (var i = 0; i < cabArray.length; i++) {
     var cost;
     if(cabArray[i].Cost) {
-      cost = cabArray[i].Cost;
-      $('#cabs-result-table > tbody:last').append('<tr><td>'+cabArray[i].service+'</td><td>'+cabArray[i].Cost+'</td></tr>');
+      if(cabArray[i].service == 'UberX') {
+        $('#cabs-result-table > tbody:last').append('<tr><td>'+'<a href="uber://?action=setPickup&pickup=my_location">'+cabArray[i].service+'</a>'+'</td><td>'+cabArray[i].Cost+'</td></tr>');
+      } else {
+        $('#cabs-result-table > tbody:last').append('<tr><td>'+cabArray[i].service+'</td><td>'+cabArray[i].Cost+'</td></tr>');
+      }
     }
   };
   $('#cab-result').show();
+}
 
+function multipleCabTable(cabArray) {
+  $('#map-canvas').hide();
+  $('#footer').hide();
+  console.log("Loading table for multiple cabs!");
+  var tableElem = $('<table class="table" id="cabs-result-table"><thead><tr><th>No. of Riders</th><th>Service</th><th>Cost</th></tr></thead><tbody></tbody></table>');
+  $('#cab-result').html(tableElem);
+  for (var i = 0; i < cabArray.length; i++) {
+    var cost;
+    if(cabArray[i].minimumCost) {
+      $('#cabs-result-table > tbody:last').append('<tr><td>'+cabArray[i].ridersCount+'</td><td>'+cabArray[i].service+'</td><td>'+cabArray[i].minimumCost+'</td></tr>');
+    }
+  };
+  $('#cab-result').show();
+}
+
+$(document).ready($('#suggestion').click(function(){
+  console.log("Distance: "+distance);
+  var expSelection = $('#experience-selection').val();
+  console.log("ExpSelc: "+expSelection);
+  var cabArray;
+  if (expSelection == 'single') {
+    cabArray = findCabSorted(1, parseFloat(distance), 30);
+    findMinForChart(1, parseFloat(distance), 30);
+    singleCabTable(cabArray);
+    $('#chart-result').show();
+  } else if (expSelection == 'multiple') {
+    cabArray = getMinRange(parseFloat(distance), 30);
+    findMinForChart(1, parseFloat(distance), 30);
+    multipleCabTable(cabArray);
+    $('#chart-result').show();
+  }
 }));
 
 function handleNoGeolocation(errorFlag) {

@@ -1,13 +1,4 @@
-<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
-<script src="http://code.highcharts.com/highcharts.js"></script>
-<script src="http://code.highcharts.com/modules/exporting.js"></script>
-
-<div id="container" style="min-width: 310px; height: 1000px; margin: 0 auto"></div>
-
-
-<script>
-
-function findMin(NoOfPersons, distance, averageSpeed) {
+function findMinForChart(NoOfPersons, distance, averageSpeed) {
 var rawText1 = '{"redcab":[{"Uber":[{"UberX":{"size":"4","basefare":"60","costperkm":"9","costpermin":"1"}},{"UberBlack":{"size":"6","basefare":"100","costperkm":"16","costpermin":"2"}}]},{"Ola":[{"OlaMini":{"size":"3","basefare":"100","costperkm":"12"}},{"OlaEconomy":{"size":"4","basefare":"120","costperkm":"16"}},{"OlaPrime":{"size":"6","basefare":"150","costperkm":"18"}}]},{"Taxi4Sure":[{"Taxi4sureHatchBack":{"size":"3","basefare":"49","costperkm":"15"}},{"Taxi4sureSedan":{"size":"4","basefare":"49","costperkm":"16"}},{"Taxi4sureSUV":{"size":"6","basefare":"150","costperkm":"18"}}]}]}';
 
 var data = {"redcab":[{"Uber":[{"UberGo":{"size":"4","basefare":"40","costperkm":"8","costpermin":"1","minimum":"80"}},{"UberX":{"size":"4","basefare":"40","costperkm":"9","costpermin":"1","minimum":"80"}},{"UberBlack":{"size":"6","basefare":"100","costperkm":"16","costpermin":"2","minimum":"150"}}]},{"Ola":[{"OlaMini":{"size":"3","basefare":"100","fixedRate":"5","costperkm":"12"}},{"OlaSedan":{"size":"4","basefare":"120","fixedRate":"5","costperkm":"16"}},{"OlaPrime":{"size":"6","basefare":"150","fixedRate":"5","costperkm":"18","costpermin":"2"}}]},{"Taxi4Sure":[{"Taxi4sureHatchBack":{"size":"3","basefare":"49","fixedRate":"4","costperkm":"15","costpermin":"1"}},{"Taxi4sureSedan":{"size":"4","basefare":"49","fixedRate":"4","costperkm":"16","costpermin":"1"}},{"Taxi4sureSUV":{"size":"6","basefare":"150","fixedRate":"4","costperkm":"18","costpermin":"1"}}]}]};
@@ -24,26 +15,26 @@ var row=0;
 for (i=0; i <noOfCabs; i++)
     costArray[i]=new Array(distance);
 
-	for ( var x in data) {
-		for ( var y in data[x]) {
-			for ( var z in data[x][y]) {
-				for ( var a in data[x][y][z]) {
-					for ( var b in data[x][y][z][a]) {
+  for ( var x in data) {
+    for ( var y in data[x]) {
+      for ( var z in data[x][y]) {
+        for ( var a in data[x][y][z]) {
+          for ( var b in data[x][y][z][a]) {
                         for ( var count=1;count<=distance;count++){
 
                         var tempDistance = count;
                         var timeTaken = tempDistance/averageSpeed*60;
-						var temp = data[x][y][z][a][b];
-						if(temp.size < NoOfPersons){
-						continue;
-						}
-						var costPerMin = temp.costpermin*1;
-						if(costPerMin){
-							costPerMin = costPerMin*timeTaken;					
-						}else{
-						costPerMin=0;
-						}
-						var cost = temp.basefare*1 + temp.costperkm*tempDistance + costPerMin*1;
+            var temp = data[x][y][z][a][b];
+            if(temp.size < NoOfPersons){
+            continue;
+            }
+            var costPerMin = temp.costpermin*1;
+            if(costPerMin){
+              costPerMin = costPerMin*timeTaken;          
+            }else{
+            costPerMin=0;
+            }
+            var cost = temp.basefare*1 + temp.costperkm*tempDistance + costPerMin*1;
                         if(temp.minimum && cost < temp.minimum){
                             cost = temp.minimum;
                         }
@@ -54,15 +45,15 @@ for (i=0; i <noOfCabs; i++)
                             cost = cost*1-temp.basefare*1;
                         }
                         }
-						costArray[row][count-1] = cost*1;
-						//console.log(cost);
+            costArray[row][count-1] = cost*1;
+            //console.log(cost);
                     }
                     row=row+1;
-					}
-				}
-			}
-		}
-	}
+          }
+        }
+      }
+    }
+  }
 console.log(costArray);
 var lineEndPoints=new Array(noOfCabs);
 for (i=0; i <noOfCabs; i++)
@@ -90,7 +81,7 @@ for(j=i+1;j<noOfCabs;j++){
 console.log(ptOfIntersection);
 
 for (var key in service) {
-	result = {"service":key, "minimumCost":minCost};
+  result = {"service":key, "minimumCost":minCost};
 }
 
 drawChart(costArray,xAxis);
@@ -98,7 +89,7 @@ drawChart(costArray,xAxis);
 
 var sample =[7.0, 6.9, 9.5, 14.5, 1, 2, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6, 26.5, 23.3, 18.3, 13.9, 9.6];
 function drawChart(costArray, xAxis) {
-    $('#container').highcharts({
+    $('#chart-result').highcharts({
         title: {
             text: 'Redcab Cost Comparison',
             x: -20 //center
@@ -111,7 +102,7 @@ function drawChart(costArray, xAxis) {
             categories: xAxis,
         plotLines: [{
         color: 'red', // Color value
-        value: 10, // Value of where the line will appear
+        value: 5, // Value of where the line will appear
         width: 2 // Width of the line    
         }]
         },
@@ -199,4 +190,3 @@ function checkLineIntersection(line1StartX, line1StartY, line1EndX, line1EndY, l
     var resulty = line1StartY + (a * (line1EndY - line1StartY));
     return {x: resultx,y:resulty};
 }
-</script>

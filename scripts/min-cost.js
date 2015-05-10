@@ -1,10 +1,11 @@
 function getMinRange(distance, averageSpeed){
-  var list = [];
+    var list = [];
 
-for(var persons = 1;persons<=15;persons++){
-  list.push(findMinCost(persons, distance, averageSpeed));
-}
-console.log(list);
+    for(var persons = 1;persons<=20;persons++){
+        list.push(findMinDynamic(persons, distance, averageSpeed));
+    }
+    console.log(list);
+    return list;
 }
 
 var findMinCost = function (NoOfPersons, distance, averageSpeed) {
@@ -14,10 +15,10 @@ var findMinCost = function (NoOfPersons, distance, averageSpeed) {
     }
     var i;
     if(NoOfPersons>=3){
-  i=3;
+    i=3;
     }else{
-  i=NoOfPersons;
-  }
+    i=NoOfPersons;
+    }
     for(;i<=6 && i<=NoOfPersons;i++){
     var temp = findMin(i,distance, averageSpeed);
     var subProblem = arguments.callee(NoOfPersons*1-i, distance, averageSpeed);
@@ -29,11 +30,50 @@ var findMinCost = function (NoOfPersons, distance, averageSpeed) {
     }
     temp = {"service":temp.service+", "+subProblem.service, "minimumCost":temp.minimumCost+tempCost};
     if(temp.minimumCost <= result.minimumCost){
-  result = temp;
-  }
+    result = temp;
+    }
     }
     return result;
 }
+map = {};
+function findMinDynamic(NoOfPersons, distance, averageSpeed){
+map = {};
+return findMinCostDynamic(NoOfPersons, distance, averageSpeed);
+}
+var findMinCostDynamic = function (NoOfPersons, distance, averageSpeed) {
+    var result = {"ridersCount":NoOfPersons, "service":"", "minimumCost":99999};
+    if (NoOfPersons < 1) {
+        return result;
+    }
+    if(map[NoOfPersons]){
+        return map[NoOfPersons];
+    }
+    var i;
+    if(NoOfPersons>=3){
+        i=3;
+    }else{
+        i=NoOfPersons;
+    }
+    for(;i<=6 && i<=NoOfPersons;i++){
+        var temp = findMin(i,distance, averageSpeed);
+        var subProblem = arguments.callee(NoOfPersons*1-i, distance, averageSpeed);
+        var tempCost;
+        var service;
+        if(subProblem.minimumCost == 99999){
+            tempCost=0;
+        } else{
+            tempCost=subProblem.minimumCost;
+        }
+        
+        temp = {"ridersCount":NoOfPersons, "service":temp.service+", "+subProblem.service, "minimumCost":temp.minimumCost+tempCost};
+        if(temp.minimumCost <= result.minimumCost){
+            result = temp;
+        }
+    }
+    map[NoOfPersons] = result;
+    return result;
+}
+
 //findMinCost(10,5,20);
 //findMinCost(4,5,20);
 //findMinCost(9,20,200);
@@ -51,24 +91,24 @@ var row=0;
 for (i=0; i <noOfCabs; i++)
     costArray[i]=new Array(distance);
 
-  for ( var x in data) {
-    for ( var y in data[x]) {
-      for ( var z in data[x][y]) {
-        for ( var a in data[x][y][z]) {
-          for ( var b in data[x][y][z][a]) {
+    for ( var x in data) {
+        for ( var y in data[x]) {
+            for ( var z in data[x][y]) {
+                for ( var a in data[x][y][z]) {
+                    for ( var b in data[x][y][z][a]) {
 
                         var timeTaken = distance/averageSpeed*60;
-            var temp = data[x][y][z][a][b];
-            if(temp.size < NoOfPersons){
-            continue;
-            }
-            var costPerMin = temp.costpermin*1;
-            if(costPerMin){
-              costPerMin = costPerMin*timeTaken;          
-            }else{
-            costPerMin=0;
-            }
-            var cost = temp.basefare*1 + temp.costperkm*distance + costPerMin*1;
+                        var temp = data[x][y][z][a][b];
+                        if(temp.size < NoOfPersons){
+                        continue;
+                        }
+                        var costPerMin = temp.costpermin*1;
+                        if(costPerMin){
+                            costPerMin = costPerMin*timeTaken;                  
+                        }else{
+                        costPerMin=0;
+                        }
+                        var cost = temp.basefare*1 + temp.costperkm*distance + costPerMin*1;
                         if(temp.minimum && cost < temp.minimum){
                             cost = temp.minimum;
                         }
@@ -80,17 +120,17 @@ for (i=0; i <noOfCabs; i++)
                         }
                         }
                         if(cost < minCost){
-            minCost = cost;
-            service = data[x][y][z][a];               
-            }
-            //console.log(cost);
+                        minCost = cost;
+                        service = data[x][y][z][a];                             
+                        }
+                        //console.log(cost);
                     }
+                }
+            }
         }
-      }
     }
-  }
 for (var key in service) {
-  result = {"service":key, "minimumCost":minCost};
+    result = {"service":key, "minimumCost":minCost};
 }
 
 return result;
@@ -110,24 +150,24 @@ var cabArray = [];
 for (i=0; i <noOfCabs; i++)
     costArray[i]=new Array(distance);
 
-  for ( var x in data) {
-    for ( var y in data[x]) {
-      for ( var z in data[x][y]) {
-        for ( var a in data[x][y][z]) {
-          for ( var b in data[x][y][z][a]) {
+    for ( var x in data) {
+        for ( var y in data[x]) {
+            for ( var z in data[x][y]) {
+                for ( var a in data[x][y][z]) {
+                    for ( var b in data[x][y][z][a]) {
 
                         var timeTaken = distance/averageSpeed*60;
-            var temp = data[x][y][z][a][b];
-            if(temp.size < NoOfPersons){
-            continue;
-            }
-            var costPerMin = temp.costpermin*1;
-            if(costPerMin){
-              costPerMin = costPerMin*timeTaken;          
-            }else{
-            costPerMin=0;
-            }
-            var cost = temp.basefare*1 + temp.costperkm*distance + costPerMin*1;
+                        var temp = data[x][y][z][a][b];
+                        if(temp.size < NoOfPersons){
+                        continue;
+                        }
+                        var costPerMin = temp.costpermin*1;
+                        if(costPerMin){
+                            costPerMin = costPerMin*timeTaken;                  
+                        }else{
+                        costPerMin=0;
+                        }
+                        var cost = temp.basefare*1 + temp.costperkm*distance + costPerMin*1;
                         if(temp.minimum && cost < temp.minimum){
                             cost = temp.minimum;
                         }
@@ -138,15 +178,15 @@ for (i=0; i <noOfCabs; i++)
                             cost = cost*1-temp.basefare*1;
                         }
                         }
-            service = data[x][y][z][a];   
-            for (var key in service) {
-            cabArray.push({"service":key, "Cost":cost});
-            } 
+                        service = data[x][y][z][a];     
+                        for (var key in service) {
+                        cabArray.push({"service":key, "Cost":cost});
+                        }   
                     }
+                }
+            }
         }
-      }
     }
-  }
 cabArray.sort(function(a,b) { return parseFloat(a.Cost) - parseFloat(b.Cost) } );
 console.log(cabArray);
 
