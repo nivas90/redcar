@@ -30,14 +30,23 @@
     </div>
 
     <div id="map-canvas"></div>
+    <div id="cab-result"></div>
 
     <div id="footer">
       <div class="input-group">
         <div class="input-group-addon">Dest: </div>
         <input placeholder="Type in a Destination" type="text" class="gn-destination-selection" id="destination-selection">
       </div>
+      <div class="input-group" id="exp-select-group">
+        <div class="input-group-addon">Cab count: </div>
+        <select class="gn-destination-selection form-control" id="experience-selection">
+          <option value="single">Single Cab</option>
+          <option value="multiple">Multiple Cab</option>
+        </select>
+        <!-- <input placeholder="Select an experience" type="text" class="gn-destination-selection" id="experience-selection"> -->
+      </div>
 
-      <button type="button" class="btn btn-danger btn-lg btn-block">Get Cab Suggestion</button>
+      <button type="button" class="btn btn-danger btn-lg btn-block" id="suggestion">Smart Book</button>
       <!-- <button type="button" class="btn btn-default btn-lg btn-block">Book a Cab</button> -->
     </div>
 
@@ -51,6 +60,7 @@
     <script src="https://maps.googleapis.com/maps/api/js?sensor=true&libraries=places"></script>
     <script src="scripts/Mapster.js"></script>
     <script src="scripts/map-options.js"></script>
+    <script src="scripts/min-cost.js"></script>
     <script src="scripts/script.js"></script>
   </body>
 

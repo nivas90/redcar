@@ -1,4 +1,6 @@
-var sourceLatLng, destLatLng;
+var sourceLatLng;
+var destLatLng;
+var distance;
 
 new gnMenu( document.getElementById( 'gn-menu' ) );
 
@@ -29,6 +31,25 @@ function randomFloat() {
   return ((Math.random()-0.5)/100)*1.5;
 }
 
+$(document).ready($('#suggestion').click(function(){
+  console.log("Distance: "+distance);
+  var cabArray = findCabSorted(5, distance, 60);
+  $('#map-canvas').hide();
+  $('#footer').hide();
+  console.log("Loading cabs");
+  var tableElem = $('<table class="table table-condensed table-striped" id="cabs-result-table"><thead><tr><th>Service</th><th>Cost</th></tr></thead><tbody></tbody></table>');
+  $('#cab-result').html(tableElem);
+  for (var i = cabArray.length - 1; i >= 0; i--) {
+    var cost;
+    if(cabArray[i].Cost) {
+      cost = cabArray[i].Cost;
+      $('#cabs-result-table > tbody:last').append('<tr><td>'+cabArray[i].service+'</td><td>'+cabArray[i].Cost+'</td></tr>');
+    }
+  };
+  $('#cab-result').show();
+
+}));
+
 function handleNoGeolocation(errorFlag) {
   if (errorFlag) {
     var content = 'Error: The Geolocation service failed.';
@@ -46,7 +67,41 @@ function handleNoGeolocation(errorFlag) {
   map.setCenter(options.position);
 }
 
+function codeAddress(geocoder, address) {
+  geocoder.geocode( { 'address': address}, function(results, status) {
+    if (status == google.maps.GeocoderStatus.OK) {
+      destLatLng = results[0].geometry.location;
+      console.log("source: "+sourceLatLng+", dest: "+destLatLng);
+      var service = new google.maps.DistanceMatrixService();
+      service.getDistanceMatrix({
+        origins: [sourceLatLng],
+        destinations: [destLatLng],
+        travelMode: google.maps.TravelMode.DRIVING,
+        unitSystem: google.maps.UnitSystem.METRIC,
+        avoidHighways: false,
+        avoidTolls: false
+      }, geoCodingcallback);
+    } else {
+      alert('Geocode was not successful for the following reason: ' + status);
+    }
+  });
+}
+
+function geoCodingcallback(response, status) {
+  if (status != google.maps.DistanceMatrixStatus.OK) {
+    alert('Error was: ' + status);
+  } else {
+    var origins = response.originAddresses;
+    for (var i = 0; i < origins.length; i++) {
+      var results = response.rows[i].elements;
+      distance = results[0].distance.text;
+    }
+  }
+}
+
 (function initialize() {
+  geocoder = new google.maps.Geocoder();
+
   autocomplete = new google.maps.places.Autocomplete(
       (document.getElementById('search')),
       { types: ['geocode'] });
@@ -58,7 +113,10 @@ function handleNoGeolocation(errorFlag) {
       (document.getElementById('destination-selection')),
       { types: ['geocode'] });
   google.maps.event.addListener(destinationAutocomplete, 'place_changed', function() {
-    console.log("Place changed in Destination box!");
+    var address = $('#destination-selection').val();
+    console.log("Place changed in Destination box! " + address);
+    codeAddress(geocoder, address);
+    $('#exp-select-group').show();
   });
 }());
 
@@ -83,6 +141,7 @@ function plotCar(map, lat, lng, carType) {
     navigator.geolocation.getCurrentPosition(function(position) {
       var geolocation = new google.maps.LatLng(position.coords.latitude,
                                        position.coords.longitude);
+      sourceLatLng = geolocation;
 
       map.setCenter(geolocation);
 

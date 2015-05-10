@@ -24,6 +24,14 @@ body {
   background-color: #fff;
   border: 1px solid #fff;
 }
+#cab-result {
+    display: none;
+    padding-top: 80px;
+}
+#exp-select-group {
+    display: none;
+}
+
 /* ============================
 --- Menu
 ============================= */
