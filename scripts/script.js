@@ -71,13 +71,13 @@ $(document).ready($('#suggestion').click(function(){
   console.log("ExpSelc: "+expSelection);
   var cabArray;
   if (expSelection == 'single') {
-    cabArray = findCabSorted(1, parseFloat(distance), 30);
-    findMinForChart(1, parseFloat(distance), 30);
+    cabArray = findCabSorted(1, parseInt(distance), 30);
+    findMinForChart(1, parseInt(distance), 30);
     singleCabTable(cabArray);
     $('#chart-result').show();
   } else if (expSelection == 'multiple') {
-    cabArray = getMinRange(parseFloat(distance), 30);
-    findMinForChart(1, parseFloat(distance), 30);
+    cabArray = getMinRange(parseInt(distance), 30);
+    findMinForChart(1, parseInt(distance), 30);
     multipleCabTable(cabArray);
     $('#chart-result').show();
   }
