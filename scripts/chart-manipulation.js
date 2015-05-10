@@ -135,7 +135,7 @@ function drawChart(costArray, xAxis) {
         legend: {
             layout: 'vertical',
             align: 'right',
-            verticalAlign: 'bottom',
+            verticalAlign: 'middle',
             borderWidth: 0
         },
         series: [{

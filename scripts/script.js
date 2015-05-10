@@ -33,24 +33,6 @@ function randomFloat() {
   return ((Math.random()-0.5)/100)*1.5;
 }
 
-function plotIndividualCar(map, lat, lng, carType) {
-  var geolocation = new google.maps.LatLng(lat, lng);
-
-  map.addMarker({
-    pos: geolocation,
-    draggable: false,
-    icon: vehicleIconEnum[carType],
-  });
-}
-
-function plotCars(position) {
-  // plotIndividualCar(map, position.coords.latitude+0.001, position.coords.longitude+0.003, 'UberX');
-  for (var i = 0; i <= 10; i++) {
-    plotIndividualCar(globalMap, position.coords.latitude+randomFloat(), 
-        position.coords.longitude+randomFloat(), cabArray[randomIndex(10)]);
-  }
-}
-
 function singleCabTable(cabArray) {
   $('#map-canvas').hide();
   $('#footer').hide();
@@ -152,6 +134,24 @@ function geoCodingcallback(response, status) {
   }
 }
 
+function plotIndividualCar(map, lat, lng, carType) {
+  var geolocation = new google.maps.LatLng(lat, lng);
+
+  map.addMarker({
+    pos: geolocation,
+    draggable: false,
+    icon: vehicleIconEnum[carType],
+  });
+}
+
+function plotCars(position) {
+  // plotIndividualCar(map, position.coords.latitude+0.001, position.coords.longitude+0.003, 'UberX');
+  for (var i = 0; i <= 10; i++) {
+    plotIndividualCar(globalMap, position.lat()+randomFloat(), 
+        position.lng()+randomFloat(), cabArray[randomIndex(10)]);
+  }
+}
+
 function sourceAddress(geocoder, address) {
   geocoder.geocode( { 'address': address}, function(results, status) {
     if (status == google.maps.GeocoderStatus.OK) {
@@ -234,13 +234,20 @@ function sourceAddress(geocoder, address) {
           callback: function() {
             var pos = pickupLocationMarker.getPosition();
             sourceLatLng = pos;
+            globalMap.setCenter(sourceLatLng);
+            pickupLocationMarker.setPosition(sourceLatLng);
+            plotCars(sourceLatLng);
             console.log("Marker dragged! to " + pos);
           }
         }
       });
       pickupLocationMarker.setZIndex(1000);
 
-      plotCars(position);
+      // plotIndividualCar(map, position.coords.latitude+0.001, position.coords.longitude+0.003, 'UberX');
+      for (var i = 0; i <= 10; i++) {
+        plotIndividualCar(globalMap, position.coords.latitude+randomFloat(), 
+            position.coords.longitude+randomFloat(), cabArray[randomIndex(10)]);
+      }
     }, function() {
       handleNoGeolocation(true);
     });
