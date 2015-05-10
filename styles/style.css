@@ -39,7 +39,12 @@ body {
 #cabs-result-table caption {
     padding-left: 8px;
 }
-
+.form-control {
+  padding: 7px 130px;
+  font-size: 18px;
+  background-color: #E0CED3;
+  height: 42px;
+}
 /* ============================
 --- Menu
 ============================= */
