@@ -1,6 +1,8 @@
 var sourceLatLng;
 var destLatLng;
 var distance;
+var globalMap;
+var pickupLocationMarker;
 
 new gnMenu( document.getElementById( 'gn-menu' ) );
 
@@ -29,6 +31,24 @@ function randomIndex(max) {
 
 function randomFloat() {
   return ((Math.random()-0.5)/100)*1.5;
+}
+
+function plotIndividualCar(map, lat, lng, carType) {
+  var geolocation = new google.maps.LatLng(lat, lng);
+
+  map.addMarker({
+    pos: geolocation,
+    draggable: false,
+    icon: vehicleIconEnum[carType],
+  });
+}
+
+function plotCars(position) {
+  // plotIndividualCar(map, position.coords.latitude+0.001, position.coords.longitude+0.003, 'UberX');
+  for (var i = 0; i <= 10; i++) {
+    plotIndividualCar(globalMap, position.coords.latitude+randomFloat(), 
+        position.coords.longitude+randomFloat(), cabArray[randomIndex(10)]);
+  }
 }
 
 function singleCabTable(cabArray) {
@@ -132,6 +152,19 @@ function geoCodingcallback(response, status) {
   }
 }
 
+function sourceAddress(geocoder, address) {
+  geocoder.geocode( { 'address': address}, function(results, status) {
+    if (status == google.maps.GeocoderStatus.OK) {
+      sourceLatLng = results[0].geometry.location;
+      globalMap.setCenter(sourceLatLng);
+      pickupLocationMarker.setPosition(sourceLatLng);
+      plotCars(sourceLatLng);
+    } else {
+      alert('Geocode was not successful for the following reason: ' + status);
+    }
+  });
+}
+
 (function initialize() {
   geocoder = new google.maps.Geocoder();
 
@@ -140,6 +173,10 @@ function geoCodingcallback(response, status) {
       { types: ['geocode'] });
   google.maps.event.addListener(autocomplete, 'place_changed', function() {
     console.log("Place changed in Search box!");
+    var address = $('#search').val();
+    console.log("Place changed in Source box! " + address);
+    sourceAddress(geocoder, address);
+    $('#exp-select-group').show();
   });
 
   destinationAutocomplete = new google.maps.places.Autocomplete(
@@ -153,21 +190,12 @@ function geoCodingcallback(response, status) {
   });
 }());
 
-function plotCar(map, lat, lng, carType) {
-  var geolocation = new google.maps.LatLng(lat, lng);
-
-  map.addMarker({
-    pos: geolocation,
-    draggable: false,
-    icon: vehicleIconEnum[carType],
-  });
-}
-
 (function(window, mapster) {
 
   var options = mapster.MAP_OPTIONS,
   element = document.getElementById('map-canvas'),
   map = mapster.create(element, options);
+  globalMap = map;
 
   // Try HTML5 geolocation
   if(navigator.geolocation) {
@@ -176,7 +204,7 @@ function plotCar(map, lat, lng, carType) {
                                        position.coords.longitude);
       sourceLatLng = geolocation;
 
-      map.setCenter(geolocation);
+      globalMap.setCenter(geolocation);
 
       var circle = new google.maps.Circle({
         center: geolocation,
@@ -185,7 +213,7 @@ function plotCar(map, lat, lng, carType) {
       autocomplete.setBounds(circle.getBounds());
 
       // User location
-      map.addMarker({
+      globalMap.addMarker({
         pos: geolocation,
         icon: {
           path: google.maps.SymbolPath.CIRCLE,
@@ -195,7 +223,7 @@ function plotCar(map, lat, lng, carType) {
         }
       });
 
-      var pickupLocationMarker = map.addMarker({
+      pickupLocationMarker = globalMap.addMarker({
         pos: geolocation,
         draggable: true,
         showContent: true,
@@ -205,17 +233,14 @@ function plotCar(map, lat, lng, carType) {
           name: 'dragend',
           callback: function() {
             var pos = pickupLocationMarker.getPosition();
+            sourceLatLng = pos;
             console.log("Marker dragged! to " + pos);
           }
         }
       });
       pickupLocationMarker.setZIndex(1000);
 
-      // plotCar(map, position.coords.latitude+0.001, position.coords.longitude+0.003, 'UberX');
-      for (var i = 0; i <= 10; i++) {
-        plotCar(map, position.coords.latitude+randomFloat(), 
-            position.coords.longitude+randomFloat(), cabArray[randomIndex(10)]);
-      }
+      plotCars(position);
     }, function() {
       handleNoGeolocation(true);
     });
