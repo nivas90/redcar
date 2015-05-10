@@ -52,7 +52,7 @@ function singleCabTable(cabArray) {
     var cost;
     if(cabArray[i].Cost) {
       if(cabArray[i].service == 'UberX') {
-        $('#cabs-result-table > tbody:last').append('<tr><td>'+'<a href="uber://?action=setPickup&pickup=my_location">'+cabArray[i].service+'</a>'+'</td><td>'+cabArray[i].Cost+'</td></tr>');
+        $('#cabs-result-table > tbody:last').append('<tr><td>'+'<a href="https://m.uber.com/">'+cabArray[i].service+'</a>'+'</td><td>'+cabArray[i].Cost+'</td></tr>');
       } else {
         $('#cabs-result-table > tbody:last').append('<tr><td>'+cabArray[i].service+'</td><td>'+cabArray[i].Cost+'</td></tr>');
       }
